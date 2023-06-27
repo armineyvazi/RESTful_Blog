@@ -1,0 +1,23 @@
+version: "3.8"
+services:
+    app:
+      build:
+        context: .
+        dockerfile: Dockerfile
+      ports:
+        - "8080:8080"
+      env_file:
+        - .env
+      depends_on:
+        - mysql
+
+    mysql:
+      image: mysql
+      container_name: mysql
+      environment:
+        MYSQL_PASSWORD: A1r2m3i4n5@1234
+        MYSQL_ROOT_PASSWORD: A1r2m3i4n5@1234
+        MYSQL_DATABASE: go
+      ports:
+        - "3306:3306"
+
