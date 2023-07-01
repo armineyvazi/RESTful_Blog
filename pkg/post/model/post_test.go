@@ -1,18 +1,16 @@
-package models
+package model
 
 import (
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/assert"
-
-	"restful_blog/models"
 )
 
 // Test_post
 func Test_post(t *testing.T) {
 	// Create a sample post
-	post := &models.Post{
+	post := &Post{
 		ID:          1,
 		Title:       "Test Post",
 		Text:        "This is a test post",
