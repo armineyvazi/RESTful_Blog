@@ -238,7 +238,7 @@ var SwaggerInfo = &swag.Spec{
 	BasePath:         "/api/v1",
 	Schemes:          []string{},
 	Title:            "RESFUL API ",
-	Description:      "This documentation for Echo REST blog.",
+	Description:      "This documentation for Echo REST api.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 }
