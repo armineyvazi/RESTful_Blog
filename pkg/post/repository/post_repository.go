@@ -1,43 +1,34 @@
-package repositories
+package repository
 
 import (
 	"fmt"
 
 	"gorm.io/gorm"
 
-	"restful_blog/database"
-	"restful_blog/models"
+	"restful_blog/pkg/category/model"
+	pm "restful_blog/pkg/post/model"
 )
-
-type PostRepository interface {
-	GetPostByID(postId int64) (*models.Post, error)
-	GetAllPosts(page, perPage int) ([]*models.Post, error)
-	CreatePost(post *models.Post, categoryIDs []int64) error
-	UpdatePost(post *models.Post, categoryIDs []int64) error
-	DeletePost(id int64) error
-}
 
 type PostRepositoryImpl struct {
 	db *gorm.DB
 }
 
-func NewPostRepository() *PostRepositoryImpl {
-	db := database.GetDB()
+func NewPostRepository(db *gorm.DB) *PostRepositoryImpl {
 	return &PostRepositoryImpl{
 		db: db,
 	}
 }
 
-func (r *PostRepositoryImpl) GetPostByID(postId int64) (*models.Post, error) {
-	var post models.Post
+func (r *PostRepositoryImpl) PostByID(postId int64) (*pm.Post, error) {
+	var post pm.Post
 	if err := r.db.First(&post, "id = ?", postId).Error; err != nil {
 		return nil, err
 	}
 	return &post, nil
 }
 
-func (r *PostRepositoryImpl) GetAllPosts(page, perPage int) ([]*models.Post, error) {
-	var posts []*models.Post
+func (r *PostRepositoryImpl) AllPosts(page, perPage int) ([]*pm.Post, error) {
+	var posts []*pm.Post
 	offset := (page - 1) * perPage
 	err := r.db.Offset(offset).Limit(perPage).Model(posts).Preload("Categories").Find(&posts).Error
 
@@ -48,8 +39,8 @@ func (r *PostRepositoryImpl) GetAllPosts(page, perPage int) ([]*models.Post, err
 	return posts, nil
 }
 
-func (r *PostRepositoryImpl) CreatePost(post *models.Post, categoryIDs []int64) error {
-	var categories []*models.Category
+func (r *PostRepositoryImpl) CreatePost(post *pm.Post, categoryIDs []int64) error {
+	var categories []*model.Category
 
 	if err := r.db.Find(&categories, categoryIDs).Error; err != nil {
 		return err
@@ -69,9 +60,9 @@ func (r *PostRepositoryImpl) CreatePost(post *models.Post, categoryIDs []int64) 
 	return nil
 }
 
-func (r *PostRepositoryImpl) UpdatePost(post *models.Post, categoryIDs []int64) error {
+func (r *PostRepositoryImpl) UpdatePost(post *pm.Post, categoryIDs []int64) error {
 
-	var categories []*models.Category
+	var categories []*model.Category
 
 	if err := r.db.Find(&categories, categoryIDs).Error; err != nil {
 		return err
@@ -98,7 +89,7 @@ func (r *PostRepositoryImpl) DeletePost(id int64) error {
 	if err := r.db.Exec("DELETE FROM category_posts WHERE post_id = ?", id).Error; err != nil {
 		return err
 	}
-	post := &models.Post{ID: id}
+	post := &pm.Post{ID: id}
 
 	if err := r.db.Delete(post).Error; err != nil {
 		return err
