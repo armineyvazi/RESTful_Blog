@@ -20,7 +20,7 @@ COPY . .
 EXPOSE 8080
 
 # Set the entry point
-CMD go run ./apps/blog/main.go
+CMD go run ./cmd/main.go
 
 
 
