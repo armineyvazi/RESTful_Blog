@@ -71,15 +71,15 @@ func (h *CategoryController) CreateCategory(c echo.Context) error {
 
 	if err := c.Bind(category); err != nil {
 		response := Response{
-			Message: "Not Valid Request",
+			Message: err.Error(),
 		}
 
 		return c.JSON(http.StatusBadRequest, response)
 	}
 
-	if err := h.CategoryService.CreateCategory(category); err != nil {
+	if _, err := h.CategoryService.CreateCategory(category); err != nil {
 		response := Response{
-			Message: "Not Valid Request",
+			Message: err.Error(),
 		}
 
 		return c.JSON(http.StatusBadRequest, response)
@@ -114,7 +114,7 @@ func (h *CategoryController) UpdateCategory(c echo.Context) error {
 
 	category.ID = categoryID
 
-	if err := h.CategoryService.UpdateCategory(category); err != nil {
+	if _, err := h.CategoryService.UpdateCategory(category); err != nil {
 		response := Response{
 			Message: "Not Valid Request",
 		}
@@ -133,14 +133,14 @@ func (h *CategoryController) DeleteCategory(c echo.Context) error {
 	categoryID, err := strconv.ParseInt(id, 10, 64)
 	if err != nil {
 		response := Response{
-			Message: "Invalid category ID",
+			Message: err.Error(),
 		}
 		return c.JSON(http.StatusBadRequest, response)
 	}
 
 	if err := h.CategoryService.DeleteCategory(categoryID); err != nil {
 		response := Response{
-			Message: "Invalid category ID",
+			Message: err.Error(),
 		}
 		return c.JSON(http.StatusBadRequest, response)
 	}
