@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"strconv"
 
 	"restful_blog/pkg/category/model"
@@ -36,14 +37,33 @@ func (c *CategoryService) AllCategory(pageStr, perPageStr string) ([]*model.Cate
 
 }
 
-func (c *CategoryService) CreateCategory(category *model.Category) error {
+func (c *CategoryService) CreateCategory(category *model.Category) (*model.Category, error) {
+	if category == nil {
+		return nil, errors.New("the category is empty")
+	}
+
+	if category.Name == "" {
+		return nil, errors.New("the name category is empty")
+	}
 	return c.CategoryRepository.CreateCategory(category)
 }
 
-func (c *CategoryService) UpdateCategory(category *model.Category) error {
-	return c.CategoryRepository.UpdateCategory(category)
+func (c *CategoryService) UpdateCategory(category *model.Category) (*model.Category, error) {
+	if category == nil {
+		return nil, errors.New("the category is empty")
+	}
+
+	updatedCategory, err := c.CategoryRepository.UpdateCategory(category)
+	if err != nil {
+		return nil, err
+	}
+	return updatedCategory, nil
 }
 
 func (c *CategoryService) DeleteCategory(categoryID int64) error {
-	return c.CategoryRepository.DeleteCategory(categoryID)
+	err := c.CategoryRepository.DeleteCategory(categoryID)
+	if err != nil {
+		return err
+	}
+	return nil
 }
