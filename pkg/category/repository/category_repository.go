@@ -36,18 +36,18 @@ func (c *CategoryRepositoryImpl) AllCategories(page, perPage int) ([]*model.Cate
 	return categories, nil
 }
 
-func (c *CategoryRepositoryImpl) CreateCategory(category *model.Category) error {
+func (c *CategoryRepositoryImpl) CreateCategory(category *model.Category) (*model.Category, error) {
 	if err := c.db.Create(category).Error; err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return category, nil
 }
 
-func (c *CategoryRepositoryImpl) UpdateCategory(category *model.Category) error {
+func (c *CategoryRepositoryImpl) UpdateCategory(category *model.Category) (*model.Category, error) {
 	if err := c.db.Save(category).Error; err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return category, nil
 }
 
 func (c *CategoryRepositoryImpl) DeleteCategory(categoryId int64) error {
